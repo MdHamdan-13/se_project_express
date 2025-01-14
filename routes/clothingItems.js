@@ -6,7 +6,7 @@ const {
 } = require("../controllers/clothingItems");
 
 router.get("/", getClothingItem);
-router.post("/", () => console.log("POST items by ID"));
-router.delete("/:itemId", () => console.log("Delete items"));
+router.post("/", createClothingItem);
+router.delete("/:itemId", deleteClothingItem);
 
 module.exports = router;
