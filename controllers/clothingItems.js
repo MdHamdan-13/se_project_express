@@ -11,6 +11,7 @@ const getClothingItem = (req, res) => {
 
 const createClothingItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
+  console.log(req.user._id);
 
   ClothingItem.create({ name, weather, imageUrl })
     .then((item) => res.status(201).send(item))
