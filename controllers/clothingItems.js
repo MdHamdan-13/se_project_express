@@ -1,10 +1,12 @@
 const ClothingItem = require("../models/clothingItems");
+const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
 
 const getClothingItem = (req, res) => {
   ClothingItem.find({})
     .then((item) => res.status(200).send(item))
     .catch((error) => {
-      console.log(error);
+      console.error(error);
+      console.log(error.name);
       return res.status(500).send({ message: error.message });
     });
 };
@@ -16,11 +18,12 @@ const createClothingItem = (req, res) => {
   ClothingItem.create({ name, weather, imageUrl })
     .then((item) => res.status(201).send(item))
     .catch((error) => {
-      console.log(error);
+      console.error(error);
+      console.log(error.name);
       if (error.name === "ValidationError") {
-        return res.status(400).send({ message: error.message });
+        return res.status(BAD_REQUEST).send({ message: error.message });
       }
-      return res.status(500).send({ message: error.message });
+      return res.status(SERVER_ERROR).send({ message: error.message });
     });
 };
 
@@ -31,8 +34,8 @@ const deleteClothingItem = (req, res) => {
     .orFail()
     .then((item) => res.status(204).send({}))
     .catch((error) => {
-      console.log(error);
-      return res.status(500).send({ message: error.message });
+      console.error(error);
+      return res.status(SERVER_ERROR).send({ message: error.message });
     });
 };
 
