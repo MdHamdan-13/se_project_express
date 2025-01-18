@@ -39,4 +39,32 @@ const deleteClothingItem = (req, res) => {
     });
 };
 
-module.exports = { getClothingItem, createClothingItem, deleteClothingItem };
+const likeItem = (req, res) => {
+  ClothingItem.findByIdAndUpdate(
+    req.params.itemId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true }
+  )
+    .orFail()
+    .then((item) => res.status(200).send(item))
+    .catch((error) => {
+      console.error(error);
+      return res.status(SERVER_ERROR).send({ message: error.message });
+    });
+};
+
+const dislikeItem = (req, res) => {
+  ClothingItem.findByIdAndUpdate(
+    req.params.itemId,
+    { $pull: { likes: req.user._id } },
+    { new: true }
+  );
+};
+
+module.exports = {
+  getClothingItem,
+  createClothingItem,
+  deleteClothingItem,
+  likeItem,
+  dislikeItem,
+};
