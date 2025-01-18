@@ -49,6 +49,14 @@ const likeItem = (req, res) => {
     .then((item) => res.status(200).send(item))
     .catch((error) => {
       console.error(error);
+      console.log(error.name);
+
+      if (error.name === "CastError") {
+        return res.status(BAD_REQUEST).send({ message: error.message });
+      }
+      if (error.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).send({ message: error.message });
+      }
       return res.status(SERVER_ERROR).send({ message: error.message });
     });
 };
@@ -58,7 +66,21 @@ const dislikeItem = (req, res) => {
     req.params.itemId,
     { $pull: { likes: req.user._id } },
     { new: true }
-  );
+  )
+    .orFail()
+    .then((item) => res.status(200).send(item))
+    .catch((error) => {
+      console.error(error);
+      console.log(error.name);
+
+      if (error.name === "CastError") {
+        return res.status(BAD_REQUEST).send({ message: error.message });
+      }
+      if (error.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).send({ message: error.message });
+      }
+      return res.status(SERVER_ERROR).send({ message: error.message });
+    });
 };
 
 module.exports = {
