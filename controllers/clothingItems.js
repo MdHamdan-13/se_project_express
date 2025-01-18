@@ -7,7 +7,7 @@ const getClothingItem = (req, res) => {
     .catch((error) => {
       console.error(error);
       console.log(error.name);
-      return res.status(500).send({ message: error.message });
+      return res.status(SERVER_ERROR).send({ message: error.message });
     });
 };
 
@@ -32,9 +32,17 @@ const deleteClothingItem = (req, res) => {
 
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then((item) => res.status(204).send({}))
+    .then((item) => res.status(200).send(item))
     .catch((error) => {
       console.error(error);
+      console.log(error.name);
+
+      if (error.name === "CastError") {
+        return res.status(BAD_REQUEST).send({ message: error.message });
+      }
+      if (error.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).send({ message: error.message });
+      }
       return res.status(SERVER_ERROR).send({ message: error.message });
     });
 };
