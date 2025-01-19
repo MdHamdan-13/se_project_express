@@ -1,19 +1,21 @@
 const ClothingItem = require("../models/clothingItems");
 const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
 
+//GET - Items
 const getClothingItem = (req, res) => {
   ClothingItem.find({})
     .then((item) => res.status(200).send(item))
     .catch((error) => {
       console.error(error);
       console.log(error.name);
-      return res.status(SERVER_ERROR).send({ message: error.message });
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
-
+//POST - Items
 const createClothingItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
-  // console.log(req.user._id);
 
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => res.status(201).send(item))
@@ -23,10 +25,12 @@ const createClothingItem = (req, res) => {
       if (error.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({ message: error.message });
       }
-      return res.status(SERVER_ERROR).send({ message: error.message });
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
-
+//DELETE - Items
 const deleteClothingItem = (req, res) => {
   const { itemId } = req.params;
 
@@ -43,10 +47,13 @@ const deleteClothingItem = (req, res) => {
       if (error.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({ message: error.message });
       }
-      return res.status(SERVER_ERROR).send({ message: error.message });
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
+//PUT - Like Items
 const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
@@ -65,10 +72,12 @@ const likeItem = (req, res) => {
       if (error.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({ message: error.message });
       }
-      return res.status(SERVER_ERROR).send({ message: error.message });
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
-
+//DELETE - Dislike Items
 const dislikeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
@@ -87,7 +96,9 @@ const dislikeItem = (req, res) => {
       if (error.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({ message: error.message });
       }
-      return res.status(SERVER_ERROR).send({ message: error.message });
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
