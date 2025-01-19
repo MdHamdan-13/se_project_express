@@ -1,7 +1,6 @@
 const User = require("../models/user");
 const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
 
-//GET - User
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send(users))
@@ -12,7 +11,7 @@ const getUsers = (req, res) => {
         .send({ message: "An error has occurred on the server" });
     });
 };
-//GET - User
+
 const getUser = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
@@ -32,7 +31,7 @@ const getUser = (req, res) => {
         .send({ message: "An error has occurred on the server" });
     });
 };
-//POST - User
+
 const createUser = (req, res) => {
   const { name, avatar } = req.body;
 
