@@ -1,7 +1,7 @@
 const ClothingItem = require("../models/clothingItems");
 const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
 
-//GET - Items
+//GET-Items
 const getClothingItem = (req, res) => {
   ClothingItem.find({})
     .then((item) => res.status(200).send(item))
@@ -13,7 +13,7 @@ const getClothingItem = (req, res) => {
         .send({ message: "An error has occurred on the server" });
     });
 };
-//POST - Items
+//POST-Items
 const createClothingItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
 
@@ -30,7 +30,7 @@ const createClothingItem = (req, res) => {
         .send({ message: "An error has occurred on the server" });
     });
 };
-//DELETE - Items
+//DELETE-Items
 const deleteClothingItem = (req, res) => {
   const { itemId } = req.params;
 
@@ -53,7 +53,7 @@ const deleteClothingItem = (req, res) => {
     });
 };
 
-//PUT - Like Items
+//PUT-Like Items
 const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
@@ -77,7 +77,7 @@ const likeItem = (req, res) => {
         .send({ message: "An error has occurred on the server" });
     });
 };
-//DELETE - Dislike Items
+//GET-Items
 const dislikeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
