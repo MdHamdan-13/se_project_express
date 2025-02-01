@@ -1,5 +1,14 @@
 const User = require("../models/user");
-const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../utils/config");
+const {
+  BAD_REQUEST,
+  UNAUTH_ERROR,
+  NOT_FOUND,
+  CONFLICT_ERROR,
+  SERVER_ERROR,
+} = require("../utils/errors");
 
 const getUsers = (req, res) => {
   User.find({})
@@ -33,14 +42,22 @@ const getUser = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar, email, password } = req.body;
 
-  User.create({ name, avatar })
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => User.create({ name, avatar, email, password: hash }))
     .then((user) => res.status(200).send(user))
     .catch((error) => {
       console.error(error);
+      console.log(error.name);
       if (error.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({ message: error.message });
+      }
+      if (error.code === 11000) {
+        return res
+          .status(CONFLICT_ERROR)
+          .send({ message: "Email already exists" });
       }
       return res
         .status(SERVER_ERROR)
@@ -48,4 +65,19 @@ const createUser = (req, res) => {
     });
 };
 
-module.exports = { getUsers, getUser, createUser };
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      res.status(200).send(token);
+    })
+    .catch((error) => {
+      res.status(UNAUTH_ERROR).send({ message: error.message });
+    });
+};
+
+module.exports = { getUsers, getUser, createUser, login };
