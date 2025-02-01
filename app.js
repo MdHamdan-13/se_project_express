@@ -14,12 +14,12 @@ mongoose
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: "678ae5a2109025b2e7367627",
-  };
-  next();
-});
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: "678ae5a2109025b2e7367627",
+//   };
+//   next();
+// });
 
 app.use("/", indexRouter);
 

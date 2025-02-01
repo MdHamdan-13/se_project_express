@@ -1,9 +1,15 @@
 const ClothingItem = require("../models/clothingItems");
-const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
+const {
+  OK,
+  CREATED,
+  BAD_REQUEST,
+  NOT_FOUND,
+  SERVER_ERROR,
+} = require("../utils/errors");
 
 const getClothingItem = (req, res) => {
   ClothingItem.find({})
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.status(OK).send(item))
     .catch((error) => {
       console.error(error);
       return res
@@ -16,7 +22,7 @@ const createClothingItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
 
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
-    .then((item) => res.status(201).send(item))
+    .then((item) => res.status(CREATED).send(item))
     .catch((error) => {
       console.error(error);
       if (error.name === "ValidationError") {
@@ -33,7 +39,7 @@ const deleteClothingItem = (req, res) => {
 
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.status(OK).send(item))
     .catch((error) => {
       console.error(error);
       if (error.name === "CastError") {
@@ -55,7 +61,7 @@ const likeItem = (req, res) => {
     { new: true }
   )
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.status(OK).send(item))
     .catch((error) => {
       console.error(error);
       if (error.name === "CastError") {
@@ -77,7 +83,7 @@ const dislikeItem = (req, res) => {
     { new: true }
   )
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.status(OK).send(item))
     .catch((error) => {
       console.error(error);
 

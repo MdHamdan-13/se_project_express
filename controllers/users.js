@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
 const {
+  OK,
   BAD_REQUEST,
   UNAUTH_ERROR,
   NOT_FOUND,
@@ -12,7 +13,7 @@ const {
 
 const getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((users) => res.status(OK).send(users))
     .catch((error) => {
       console.error(error);
       return res
@@ -25,7 +26,7 @@ const getUser = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
     .orFail()
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.status(OK).send(user))
     .catch((error) => {
       console.error(error);
       console.log(error.name);
@@ -47,7 +48,7 @@ const createUser = (req, res) => {
   bcrypt
     .hash(password, 10)
     .then((hash) => User.create({ name, avatar, email, password: hash }))
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.status(OK).send(user))
     .catch((error) => {
       console.error(error);
       console.log(error.name);
@@ -73,7 +74,7 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.status(200).send(token);
+      res.status(OK).send(token);
     })
     .catch((error) => {
       res.status(UNAUTH_ERROR).send({ message: error.message });
