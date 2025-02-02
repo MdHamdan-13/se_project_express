@@ -50,14 +50,12 @@ const createUser = (req, res) => {
     .then((existingUser) => {
       if (existingUser) {
         const error = new Error("User already exists");
-        error.name = "ValidationError";
+        error.name = "DuplicationError";
         error.code = 11000;
         throw error;
       }
       return bcrypt.hash(password, 10);
     })
-    // bcrypt
-    //   .hash(password, 10)
     .then((hash) => User.create({ name, avatar, email, password: hash }))
     .then((user) => {
       const userCopy = user.toObject();
