@@ -46,15 +46,15 @@ const getCurrentUser = (req, res) => {
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
-  User.find({ email });
-  // .then((existingUser) => {
-  //   if (existingUser) {
-  //     throw new Error("DuplicationError");
-  //   }
-  //   return bcrypt.hash(password, 10);
-  // })
-  bcrypt
-    .hash(password, 10)
+  User.find({ email })
+    .then((existingUser) => {
+      if (existingUser) {
+        throw new Error("DuplicationError");
+      }
+      return bcrypt.hash(password, 10);
+    })
+    // bcrypt
+    //   .hash(password, 10)
     .then((hash) => User.create({ name, avatar, email, password: hash }))
     .then((user) => {
       const userCopy = user.toObject();
@@ -67,11 +67,11 @@ const createUser = (req, res) => {
       if (error.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({ message: error.message });
       }
-      // if (error.name === "DuplicationError") {
-      //   return res
-      //     .status(CONFLICT_ERROR)
-      //     .send({ message: "Email already exists" });
-      // }
+      if (error.name === "DuplicationError") {
+        return res
+          .status(CONFLICT_ERROR)
+          .send({ message: "Email already exists" });
+      }
       if (error.code === 11000) {
         return res
           .status(CONFLICT_ERROR)
