@@ -9,5 +9,6 @@ const {
 // router.get("/", getUsers);
 // router.get("/:userId", getUser); before step 7
 router.get("/users/me", getCurrentUser);
+// router.post("/me",)
 
 module.exports = router;

@@ -24,7 +24,7 @@ const getUsers = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const { userId } = req.user._id;
+  const userId = req.user._id;
   User.findById(userId)
     .orFail()
     .then((user) => res.status(OK).send(user))
@@ -46,10 +46,13 @@ const getCurrentUser = (req, res) => {
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
-  User.find({ email })
+  User.findOne({ email })
     .then((existingUser) => {
       if (existingUser) {
-        throw new Error("DuplicationError");
+        const error = new Error("User already exists");
+        error.name = "ValidationError";
+        error.code = 11000;
+        throw error;
       }
       return bcrypt.hash(password, 10);
     })
@@ -67,18 +70,13 @@ const createUser = (req, res) => {
       if (error.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({ message: error.message });
       }
-      if (error.name === "DuplicationError") {
-        return res
-          .status(CONFLICT_ERROR)
-          .send({ message: "Email already exists" });
-      }
       if (error.code === 11000) {
         return res
           .status(CONFLICT_ERROR)
           .send({ message: "Email already exists" });
       }
       return res
-        .status(SERVER_ERROR) //500 error
+        .status(SERVER_ERROR)
         .send({ message: "An error has occurred on the server" });
     });
 };
@@ -104,6 +102,10 @@ const login = (req, res) => {
       console.log(error.name);
       return res.status(UNAUTH_ERROR).send({ message: error.message });
     });
+};
+
+const updateProfile = (req, res) => {
+  const { name, avatar } = req.body;
 };
 
 module.exports = { getUsers, getCurrentUser, createUser, login };
