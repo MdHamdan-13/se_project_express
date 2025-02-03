@@ -27,7 +27,10 @@ const getCurrentUser = (req, res) => {
   const userId = req.user._id;
   User.findById(userId)
     .orFail()
-    .then((user) => res.status(OK).send(user))
+    .then((user) => {
+      console.log(user);
+      return res.status(OK).send(user);
+    })
     .catch((error) => {
       console.error(error);
       console.log(error.name);
@@ -65,6 +68,10 @@ const createUser = (req, res) => {
     .catch((error) => {
       console.error(error);
       console.log(error.name);
+
+      // if (error.name === "DuplicationError") {
+      //   return res.status(BAD_REQUEST).send({ message: error.message });
+      // }
       if (error.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({ message: error.message });
       }
@@ -88,12 +95,12 @@ const login = (req, res) => {
       .send({ message: "Email and password required" });
   }
 
-  return User.findUserByCredentials(email, password)
+  User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      return res.status(OK).send(token);
+      return res.status(OK).json(token);
     })
     .catch((error) => {
       console.error(error);
@@ -102,8 +109,8 @@ const login = (req, res) => {
     });
 };
 
-const updateProfile = (req, res) => {
+const updateUser = (req, res) => {
   const { name, avatar } = req.body;
 };
 
-module.exports = { getUsers, getCurrentUser, createUser, login };
+module.exports = { getUsers, getCurrentUser, createUser, login, updateUser };

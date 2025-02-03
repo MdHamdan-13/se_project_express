@@ -8,6 +8,7 @@ const {
 // router.post("/", createUser);
 // router.get("/", getUsers);
 // router.get("/:userId", getUser); before step 7
+
 router.get("/users/me", getCurrentUser);
 // router.post("/me",)
 
