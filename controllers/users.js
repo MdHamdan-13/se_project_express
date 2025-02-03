@@ -1,6 +1,6 @@
-const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
 const {
   OK,
@@ -28,7 +28,6 @@ const getCurrentUser = (req, res) => {
   User.findById(userId)
     .orFail()
     .then((user) => {
-      console.log(user);
       return res.status(OK).send(user);
     })
     .catch((error) => {
@@ -50,6 +49,7 @@ const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
   User.findOne({ email })
+    .select("+password")
     .then((existingUser) => {
       if (existingUser) {
         const error = new Error("User already exists");
@@ -69,9 +69,6 @@ const createUser = (req, res) => {
       console.error(error);
       console.log(error.name);
 
-      // if (error.name === "DuplicationError") {
-      //   return res.status(BAD_REQUEST).send({ message: error.message });
-      // }
       if (error.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({ message: error.message });
       }
