@@ -111,6 +111,26 @@ const login = (req, res) => {
 
 const updateUser = (req, res) => {
   const { name, avatar } = req.body;
+  const userId = req.user._id;
+
+  User.findByIdAndUpdate(
+    userId,
+    { name, avatar },
+    { new: true, runValidators: true }
+  )
+    .then((updatedUser) => {
+      if (!updatedUser) {
+        return res.status(NOT_FOUND).send({ message: "User not Found" });
+      }
+      res.status(OK).send(updatedUser);
+    })
+    .catch((error) => {
+      console.error(error);
+      console.log(error.name);
+      if (error.name === "ValidationError") {
+        return res.status(BAD_REQUEST).send({ message: error.message });
+      }
+    });
 };
 
 module.exports = { getUsers, getCurrentUser, createUser, login, updateUser };
