@@ -27,9 +27,7 @@ const getCurrentUser = (req, res) => {
   const userId = req.user._id;
   User.findById(userId)
     .orFail()
-    .then((user) => {
-      return res.status(OK).send(user);
-    })
+    .then((user) => res.status(OK).send(user))
     .catch((error) => {
       console.error(error);
       console.log(error.name);
