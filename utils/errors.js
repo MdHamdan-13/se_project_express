@@ -2,6 +2,7 @@ const OK = 200;
 const CREATED = 201;
 const BAD_REQUEST = 400;
 const UNAUTH_ERROR = 401;
+const FORBIDDEN = 403;
 const NOT_FOUND = 404;
 const CONFLICT_ERROR = 409;
 const SERVER_ERROR = 500;
@@ -11,6 +12,7 @@ module.exports = {
   CREATED,
   BAD_REQUEST,
   UNAUTH_ERROR,
+  FORBIDDEN,
   NOT_FOUND,
   CONFLICT_ERROR,
   SERVER_ERROR,

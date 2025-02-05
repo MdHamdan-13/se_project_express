@@ -3,6 +3,7 @@ const {
   OK,
   CREATED,
   BAD_REQUEST,
+  FORBIDDEN,
   NOT_FOUND,
   SERVER_ERROR,
 } = require("../utils/errors");
@@ -36,6 +37,16 @@ const createClothingItem = (req, res) => {
 
 const deleteClothingItem = (req, res) => {
   const { itemId } = req.params;
+  const itemOwner = req.user._id;
+
+  ClothingItem.findById(itemId).then((item) => {
+    if (!item) {
+      return res.status(NOT_FOUND).send({ message: "Item not found" });
+    }
+    if (item.owner.toString() !== itemOwner) {
+      return res.status(FORBIDDEN).send({ message: "User is not authorized" });
+    }
+  });
 
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
