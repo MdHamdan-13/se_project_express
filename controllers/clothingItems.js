@@ -56,9 +56,9 @@ const deleteClothingItem = (req, res) => {
       if (error.name === "CastError") {
         return res.status(BAD_REQUEST).send({ message: error.message });
       }
-      if (error.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: error.message });
-      }
+      // if (error.name === "DocumentNotFoundError") {
+      //   return res.status(NOT_FOUND).send({ message: error.message });
+      // }
       return res
         .status(SERVER_ERROR)
         .send({ message: "An error has occurred on the server" });
