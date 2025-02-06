@@ -42,18 +42,22 @@ const deleteClothingItem = (req, res) => {
   ClothingItem.findById(itemId)
     .then((item) => {
       if (!item) {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
+        throw new Error("NotFound");
       }
       if (item.owner.toString() !== itemOwner) {
-        return res
-          .status(FORBIDDEN)
-          .send({ message: "User is not authorized" });
+        throw new Error("Forbidden");
       }
       return ClothingItem.findByIdAndDelete(itemId);
     })
     .then((item) => res.status(OK).send(item))
     .catch((error) => {
       console.error(error);
+      if (error.message === "NotFound") {
+        return res.status(NOT_FOUND).send({ message: error.message });
+      }
+      if (error.message === "Forbidden") {
+        return res.status(FORBIDDEN).send({ message: error.message });
+      }
       if (error.name === "CastError") {
         return res.status(BAD_REQUEST).send({ message: error.message });
       }
