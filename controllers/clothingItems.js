@@ -2,24 +2,24 @@ const ClothingItem = require("../models/clothingItems");
 const {
   OK,
   CREATED,
-  BAD_REQUEST,
-  FORBIDDEN,
-  NOT_FOUND,
-  SERVER_ERROR,
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
 } = require("../utils/errors");
 
-const getClothingItem = (req, res) => {
+const getClothingItem = (req, res, next) => {
   ClothingItem.find({})
     .then((item) => res.status(OK).send(item))
     .catch((error) => {
       console.error(error);
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      // return res
+      //   .status(SERVER_ERROR)
+      //   .send({ message: "An error has occurred on the server" });
+      next(error);
     });
 };
 
-const createClothingItem = (req, res) => {
+const createClothingItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
 
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
@@ -27,15 +27,18 @@ const createClothingItem = (req, res) => {
     .catch((error) => {
       console.error(error);
       if (error.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ message: error.message });
+        // return res.status(BAD_REQUEST).send({ message: error.message });
+        next(new BadRequestError("Invalid User"));
+      } else {
+        // return res
+        //   .status(SERVER_ERROR)
+        //   .send({ message: "An error has occurred on the server" });
+        next(error);
       }
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 
-const deleteClothingItem = (req, res) => {
+const deleteClothingItem = (req, res, next) => {
   const { itemId } = req.params;
   const itemOwner = req.user._id;
 
@@ -53,17 +56,22 @@ const deleteClothingItem = (req, res) => {
     .catch((error) => {
       console.error(error);
       if (error.message === "NotFound") {
-        return res.status(NOT_FOUND).send({ message: error.message });
+        // return res.status(NOT_FOUND).send({ message: error.message });
+        next(new NotFoundError("Item not found"));
       }
       if (error.message === "Forbidden") {
-        return res.status(FORBIDDEN).send({ message: error.message });
+        // return res.status(FORBIDDEN).send({ message: error.message });
+        next(new ForbiddenError("Forbidden"));
       }
       if (error.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: error.message });
+        // return res.status(BAD_REQUEST).send({ message: error.message });
+        next(new BadRequestError("Invalid User"));
+      } else {
+        // return res
+        //   .status(SERVER_ERROR)
+        //   .send({ message: "An error has occurred on the server" });
+        next(error);
       }
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -78,18 +86,22 @@ const likeItem = (req, res) => {
     .catch((error) => {
       console.error(error);
       if (error.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: error.message });
+        // return res.status(BAD_REQUEST).send({ message: error.message });
+        next(new BadRequestError("Invalid User"));
       }
       if (error.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: error.message });
+        // return res.status(NOT_FOUND).send({ message: error.message });
+        next(new NotFoundError("Item not found"));
+      } else {
+        // return res
+        //   .status(SERVER_ERROR)
+        //   .send({ message: "An error has occurred on the server" });
+        next(error);
       }
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 
-const dislikeItem = (req, res) => {
+const dislikeItem = (req, res, next) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } },
@@ -101,14 +113,18 @@ const dislikeItem = (req, res) => {
       console.error(error);
 
       if (error.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: error.message });
+        // return res.status(BAD_REQUEST).send({ message: error.message });
+        next(new BadRequestError("Invalid User"));
       }
       if (error.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: error.message });
+        // return res.status(NOT_FOUND).send({ message: error.message });
+        next(new NotFoundError("Item not found"));
+      } else {
+        // return res
+        //   .status(SERVER_ERROR)
+        //   .send({ message: "An error has occurred on the server" });
+        next(error);
       }
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 
