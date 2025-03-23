@@ -32,3 +32,7 @@ The WTWR app is a react-based application that helps users decide what to wear b
 
 - [BackEnd](https://github.com/MdHamdan-13/se_project_express.git)
 - [FrontEnd](https://github.com/MdHamdan-13/se_project_react.git)
+
+- [https://hamd-wtwr.crabdance.com/](https://hamd-wtwr.crabdance.com/)
+- [https://api.hamd-wtwr.crabdance.com/](https://api.hamd-wtwr.crabdance.com/)
+- [https://www.hamd-wtwr.crabdance.com/](https://www.hamd-wtwr.crabdance.com/)
