@@ -2,14 +2,12 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
-const {
-  OK,
-  BadRequestError,
-  UnauthorizedError,
-  NotFoundError,
-  ConflictError,
-  SERVER_ERROR,
-} = require("../utils/errors");
+const { OK } = require("../utils/errors/custom-error");
+
+const { BadRequestError } = require("../utils/errors/bad-request-error");
+const { ConflictError } = require("../utils/errors/conflict-error");
+const { UnauthorizedError } = require("../utils/errors/unauth-error");
+const { NotFoundError } = require("../utils/errors/notfound-error");
 
 const getCurrentUser = (req, res, next) => {
   const userId = req.user._id;
@@ -68,9 +66,10 @@ const createUser = (req, res, next) => {
         next(new BadRequestError("Invalid User"));
       }
       if (error.code === 11000) {
-        return res
-          .status(ConflictError)
-          .send({ message: "Email already exists" });
+        // return res
+        //   .status(ConflictError)
+        //   .send({ message: "Email already exists" });
+        next(new ConflictError("Email already exists"));
       } else {
         // return res
         //   .status(SERVER_ERROR)
@@ -84,9 +83,10 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res
-      .status(BadRequestError)
-      .send({ message: "Email and password required" });
+    // return res
+    //   .status(BadRequestError)
+    //   .send({ message: "Email and password required" });
+    return next(new BadRequestError("Email and password required"));
   }
 
   return User.findUserByCredentials(email, password)

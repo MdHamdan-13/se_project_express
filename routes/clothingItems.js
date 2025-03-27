@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const auth = require("../middlewares/auth");
+const { validateClothingItem } = require("../middlewares/validation");
 const {
   getClothingItem,
   createClothingItem,
@@ -12,9 +13,10 @@ router.get("/", getClothingItem);
 
 router.use(auth);
 
-router.post("/", createClothingItem);
-router.delete("/:itemId", deleteClothingItem);
-router.put("/:itemId/likes", likeItem);
-router.delete("/:itemId/likes", dislikeItem);
+// Protected routes - recenyly added validation
+router.post("/", validateClothingItem, createClothingItem);
+router.delete("/:itemId", validateClothingItem, deleteClothingItem);
+router.put("/:itemId/likes", validateClothingItem, likeItem);
+router.delete("/:itemId/likes", validateClothingItem, dislikeItem);
 
 module.exports = router;

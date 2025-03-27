@@ -5,13 +5,14 @@ const validateURL = (value, helpers) => {
   if (validator.isURL(value)) {
     return value;
   }
-  return helpers.message("string.url");
+  return helpers.message("string.uri");
 };
 
 const validateClothingItem = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
     imageUrl: Joi.string().url().required(),
+    weather: Joi.string().valid("hot", "warm", "cold").required(),
   }),
 });
 
@@ -28,6 +29,13 @@ const validateUserLogin = celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
+  }),
+});
+
+const validateUserUpdate = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30).required(),
+    avatar: Joi.string().url().required(),
   }),
 });
 
@@ -59,6 +67,7 @@ module.exports = {
   validateClothingItem,
   validateUserInfo,
   validateUserLogin,
+  validateUserUpdate,
   validateItemId,
   validateCardBody,
 };
