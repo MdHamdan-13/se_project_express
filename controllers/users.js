@@ -4,10 +4,10 @@ const User = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
 const { OK } = require("../utils/errors/custom-error");
 
-const { BadRequestError } = require("../utils/errors/bad-request-error");
-const { ConflictError } = require("../utils/errors/conflict-error");
-const { UnauthorizedError } = require("../utils/errors/unauth-error");
-const { NotFoundError } = require("../utils/errors/notfound-error");
+const BadRequestError = require("../utils/errors/bad-request-error");
+const ConflictError = require("../utils/errors/conflict-error");
+const UnauthorizedError = require("../utils/errors/unauth-error");
+const NotFoundError = require("../utils/errors/notfound-error");
 
 const getCurrentUser = (req, res, next) => {
   const userId = req.user._id;
